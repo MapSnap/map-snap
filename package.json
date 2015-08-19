@@ -1,0 +1,32 @@
+{
+  "name": "map-snap",
+  "version": "1.0.0",
+  "description": "MapSnap shows you recent Instagram posts in any location to give you a snapshot of what's going on in the world around you",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pllx/map-snap.git"
+  },
+  "author": "Arash Dai, Ken Kaiser, Allen Mackey, Benjamin Tan, Nick Troutwine",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Pllx/map-snap/issues"
+  },
+  "homepage": "https://github.com/Pllx/map-snap#readme",
+  "dependencies": {
+    "browserify": "^11.0.1",
+    "express": "^4.13.3",
+    "gulp": "^3.9.0",
+    "gulp-nodemon": "^2.0.3",
+    "jquery": "^2.1.4",
+    "nodemon": "^1.4.1",
+    "react": "^0.13.3",
+    "reactify": "^1.1.1",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.3.1"
+  }
+}
