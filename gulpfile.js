@@ -41,7 +41,7 @@ function develop(){
 		ext: 'html js',
 	})
 	.on('restart', function(){
-		console.log('nodemon restarted!');
+		//console.log('nodemon restarted!');
 	})
 };
 
