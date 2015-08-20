@@ -11,7 +11,7 @@ var Feed = React.createClass({
   },
 
   componentDidMount: function() {
-    $.get(this.props.source, null, function(data) {
+    $.getJSON(this.props.source, null, function(data) {
       console.log(data);
       var photos = data;
       // checks to see if component is still mounted before updating
