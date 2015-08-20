@@ -41,4 +41,4 @@ gulp.task('develop', function(){
 	});
 });
 
-gulp.task('default', ['develop']);
+gulp.task('default', ['develop', ]);
