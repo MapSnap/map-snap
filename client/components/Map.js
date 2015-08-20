@@ -4,14 +4,6 @@ var Feed = require('./Feed');
 var GoogleMap = require('google-map-react');
 
 var Map = React.createClass({
-  getInitialState: function(){
-    return{
-      center: [33.979471, -118.422549],
-      zoom: 12,
-    };
-  },
-
-<<<<<<< HEAD
 	getInitialState: function(){
 		return{
 			center: [33.979471, -118.422549],

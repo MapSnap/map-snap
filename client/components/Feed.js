@@ -26,7 +26,7 @@ var Feed = React.createClass({
   render: function() {
     return (
       <div>
-        <h3> Hello world sdfasdfsd </h3>
+        <h3> Feed component </h3>
         {this.state.data}
       </div>
       )
