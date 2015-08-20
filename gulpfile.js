@@ -41,8 +41,10 @@ function develop(){
 		ext: 'html js',
 	})
 	.on('restart', function(){
+
 		//console.log('nodemon restarted!');
 	})
 };
 
 gulp.task('default', ['develop', 'browserify']);
+
