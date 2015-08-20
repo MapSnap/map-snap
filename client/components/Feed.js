@@ -24,7 +24,6 @@ var Feed = React.createClass({
   },
 
   render: function() {
-    alert('hi');
     return (
       <div>
         <h3> Hello world </h3>
