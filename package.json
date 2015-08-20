@@ -20,6 +20,7 @@
   "dependencies": {
     "browserify": "^11.0.1",
     "express": "^4.13.3",
+    "google-map-react": "^0.4.1",
     "gulp": "^3.9.0",
     "gulp-nodemon": "^2.0.3",
     "jquery": "^2.1.4",
