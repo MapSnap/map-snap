@@ -26,6 +26,7 @@
     "jquery": "^2.1.4",
     "nodemon": "^1.4.1",
     "react": "^0.13.3",
+    "react-style": "^0.5.5",
     "reactify": "^1.1.1",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.3.1"
