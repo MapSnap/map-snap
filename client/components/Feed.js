@@ -10,9 +10,9 @@ var Feed = React.createClass({
     };
   },
 
-  componentDidMount: function() {
-    $.get(this.props.source, function(data) {
-      console.log('data');
+  // componentDidMount: function() {
+    $.get(this.props.source, null, function(data) {
+      console.log(data);
       var photos = data;
       // checks to see if component is still mounted before updating
       if (this.isMounted()) {
@@ -23,19 +23,30 @@ var Feed = React.createClass({
     }.bind(this));
   },
 
+  // without jsonp gets images 
+
+  // componentDidMount: function() {
+  //   $.get(this.props.source, function(data) {
+  //     console.log(data);
+  //     var photos = data;
+  //     // checks to see if component is still mounted before updating
+  //     if (this.isMounted()) {
+  //       this.setState({
+  //         data: photos
+  //       });
+  //     }
+  //   }.bind(this));
+  // },
+
   render: function() {
-    alert('hi');
     return (
       <div>
-        <h3> Hello world </h3>
+        <h3> Hello world sdfasdfsd </h3>
         {this.state.data}
       </div>
       )
   }
 });
-
-
-
 
 
 module.exports = Feed;

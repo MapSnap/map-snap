@@ -38,7 +38,7 @@ gulp.task('develop', function(){
 	})
 	.on('restart', function(){
 		console.log('nodemon restarted!');
-	})
+	});
 });
 
 gulp.task('default', ['develop']);

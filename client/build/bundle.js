@@ -12,8 +12,8 @@ var Feed = React.createClass({displayName: "Feed",
   },
 
   componentDidMount: function() {
-    $.get(this.props.source, function(data) {
-      console.log('data');
+    $.getJSON(this.props.source, null, function(data) {
+      console.log(data);
       var photos = data;
       // checks to see if component is still mounted before updating
       if (this.isMounted()) {
@@ -24,11 +24,25 @@ var Feed = React.createClass({displayName: "Feed",
     }.bind(this));
   },
 
+  // without jsonp gets images 
+
+  // componentDidMount: function() {
+  //   $.get(this.props.source, function(data) {
+  //     console.log(data);
+  //     var photos = data;
+  //     // checks to see if component is still mounted before updating
+  //     if (this.isMounted()) {
+  //       this.setState({
+  //         data: photos
+  //       });
+  //     }
+  //   }.bind(this));
+  // },
+
   render: function() {
-    alert('hi');
     return (
       React.createElement("div", null, 
-        React.createElement("h3", null, " Hello world "), 
+        React.createElement("h3", null, " Hello world sdfasdfsd "), 
         this.state.data
       )
       )
@@ -36,10 +50,14 @@ var Feed = React.createClass({displayName: "Feed",
 });
 
 
-
-
-
 module.exports = Feed;
+
+
+
+
+
+
+
 
 
 
@@ -56,22 +74,43 @@ module.exports = Feeditem;
 
 
 
+
+
+
+
+
+
+
 },{"react":161}],3:[function(require,module,exports){
 var React = require('react');
 var Feed = require('./Feed');
 var Map = React.createClass({displayName: "Map",
 
-	render: function(){
-		return(
-		React.createElement("div", null, 
-                    React.createElement(Feed, {source: "https://api.instagram.com/v1/locations/search?lat=48.858844&lng=2.294351&client_id=46141b7b17fa4f29911b66e830bafcf1"}), 
-				"sdfdsf page"
-			)
-			);
-	}
+  // getInitialState: function () {
+
+  // },
+
+  render: function(){
+  	return(
+  	React.createElement("div", null, 
+            "// jsonp gets locations" + ' ' +
+           "//", React.createElement(Feed, {source: "https://api.instagram.com/v1/locations/search?lat=48.858844&lng=2.294351&client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?"}), "," + ' ' +
+  		 "aaaaaaa" + ' ' +
+        "// without jsonp gets images", 
+        React.createElement(Feed, {source: "https://api.instagram.com/v1/tags/nofilter/media/recent?client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?"})
+  	)
+  		);
+  }
 });
 
 module.exports = Map;
+
+
+
+
+
+
+
 
 
 
@@ -81,6 +120,13 @@ var Map = require('./components/Map');
 
 
 React.render(React.createElement(Map, null), document.getElementById('map'));
+
+
+
+
+
+
+
 
 
 
