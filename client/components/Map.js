@@ -34,7 +34,9 @@ var Map = React.createClass({
   	return(
       	<div styles={styles.gmap}>
       	<GoogleMap center={this.state.center} zoom={this.state.zoom}>
-      	</GoogleMap>
+      	<Marker lat={this.state.center[0]} lng={this.state.center[1]} label='1'></Marker>
+        <Marker lat={this.state.center[0]+0.0015} lng={this.state.center[1]} label='2'></Marker>
+        </GoogleMap>
             <form onSubmit = {this.locatePhotos}>
               <input type = "text" value = {value} defaultValue = "Enter Location" onChange = {this.handleChange} />
               <button> Find Photos </button>
@@ -42,22 +44,12 @@ var Map = React.createClass({
       	<Feed source = "https://api.instagram.com/v1/tags/nofilter/media/recent?client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?"/>
       	</div>
   	);
-  }
-      zoom: 15,
-    };
   },
+     
+  
 
-	render: function(){
-		return(
-		<div styles={styles.gmap}>
-		<GoogleMap center={this.state.center} zoom={this.state.zoom}>
-		<Marker lat={this.state.center[0]} lng={this.state.center[1]} label='1'></Marker>
-		<Marker lat={this.state.center[0]+0.0015} lng={this.state.center[1]} label='2'></Marker>
-		</GoogleMap>
-		<Feed source = "https://api.instagram.com/v1/tags/nofilter/media/recent?client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?"/>
-		</div>
-		);
-	}
+
+	
 
 });
 
