@@ -3,6 +3,8 @@ var StyleSheet = require('react-style');
 var Feed = require('./Feed');
 var Marker = require('./Marker');
 var GoogleMap = require('google-map-react');
+var $ = require('jquery');
+
 
 var Map = React.createClass({
 
@@ -10,7 +12,9 @@ var Map = React.createClass({
     return{
       center: [33.979471, -118.422549],
       zoom: 12,
-      value: ''
+      value: '',
+      source: "https://api.instagram.com/v1/tags/nofilter/media/recent?client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?",
+      data: []
     };
   },
 
@@ -29,6 +33,21 @@ var Map = React.createClass({
     })
   },
 
+  componentDidMount: function() {
+    $.getJSON(this.state.source, null, function(obj) {
+      console.log("originl", obj);
+      var photos = obj.data;
+      // console.log(photos);
+      // checks to see if component is still mounted before updating
+      if (this.isMounted()) {
+        this.setState({
+          data: photos
+        });
+      }
+
+    }.bind(this));
+  },
+
   render: function(){
     var value = this.state.value;
   	return(
@@ -41,7 +60,7 @@ var Map = React.createClass({
               <input type = "text" value = {value} defaultValue = "Enter Location" onChange = {this.handleChange} />
               <button> Find Photos </button>
             </form>
-      	<Feed source = "https://api.instagram.com/v1/tags/nofilter/media/recent?client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?"/>
+      	<Feed data = {this.state.data}/>
       	</div>
   	);
   },
