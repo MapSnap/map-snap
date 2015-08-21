@@ -12,7 +12,7 @@ var Feed = React.createClass({displayName: "Feed",
   },
 
   componentDidMount: function() {
-    $.get(this.props.source, null, function(data) {
+    $.getJSON(this.props.source, null, function(data) {
       console.log(data);
       var photos = data;
       // checks to see if component is still mounted before updating
@@ -37,15 +37,6 @@ var Feed = React.createClass({displayName: "Feed",
 
 module.exports = Feed;
 
-
-
-
-
-
-
-
-
-
 },{"./Feeditem":2,"jquery":54,"react":209}],2:[function(require,module,exports){
 var React = require('react');
 
@@ -57,15 +48,6 @@ render: function() {
 
 module.exports = Feeditem;
 
-
-
-
-
-
-
-
-
-
 },{"react":209}],3:[function(require,module,exports){
 var React = require('react');
 var Feed = require('./Feed');
@@ -76,15 +58,23 @@ var Map = React.createClass({displayName: "Map",
     return{
       center: [33.979471, -118.422549],
       zoom: 12,
+      value: ' '
     };
   },
 
+  handleChange: function(event) {
+    this.setState({
+      value: event.target.value
+    })
+  },
+
   render: function(){
+    var value = this.state.value;
   	return(
   	React.createElement("div", null, 
     React.createElement(GoogleMap, {center: this.state.center, zoom: this.state.zoom}
     ), 
-            
+          React.createElement("input", {type: "text", value: value, onChange: this.handleChange}), 
         React.createElement(Feed, {source: "https://api.instagram.com/v1/tags/nofilter/media/recent?client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?"})
   	)
   	);
@@ -92,17 +82,7 @@ var Map = React.createClass({displayName: "Map",
 
 });
 
-
 module.exports = Map;
-
-
-
-
-
-
-
-
-
 
 },{"./Feed":1,"google-map-react":10,"react":209}],4:[function(require,module,exports){
 var React = require('react');
@@ -110,15 +90,6 @@ var Map = require('./components/Map');
 
 
 React.render(React.createElement(Map, null), document.getElementById('map'));
-
-
-
-
-
-
-
-
-
 
 },{"./components/Map":3,"react":209}],5:[function(require,module,exports){
 // shim for using process in browser
