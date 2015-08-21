@@ -1,43 +1,36 @@
 var React = require('react');
 var Feeditem = require('./Feeditem');
-var $ = require('jquery');
+var StyleSheet = require('react-style');
 
 var Feed = React.createClass({
-  getInitialState: function() {
-    return {
-      data: []
-          };
-  },
-
-  componentDidMount: function() {
-    $.getJSON(this.props.source, null, function(obj) {
-      console.log("originl", obj);
-      var photos = obj.data;
-      // console.log(photos);
-      // checks to see if component is still mounted before updating
-      if (this.isMounted()) {
-        this.setState({
-          data: photos
-        });
-      }
-
-    }.bind(this));
-  },
 
   render: function() {
-    console.log("in render");
     var phoArray = [];
+    var nameArray = [];
+    // var tagsArray = [];
     var lonArray = [];
     var latArray = [];
-    for(var i=0; i<this.state.data.length; i++){
-      if(this.state.data[i].location !== null){
-      phoArray.push(<Feeditem pictures={this.state.data[i].images.low_resolution.url}/>);
-      lonArray.push(this.state.data[i].location.longitude);
-      latArray.push(this.state.data[i].location.latitude);
+    for(var i=0; i<this.props.data.length; i++){
+      if(this.props.data[i].location !== null){
+        phoArray.push(<Feeditem pictures={this.props.data[i].images.low_resolution.url}/>);
+        phoArray.push("USERNAME= ");
+        phoArray.push(this.props.data[i].user.username);
+        phoArray.push(<br/>);
+        phoArray.push("TAGS=");
+            lonArray.push(this.props.data[i].location.longitude);
+            latArray.push(this.props.data[i].location.latitude);
+
+        var tagsArray = (this.props.data[i].tags);
+        for(var x =0; x < tagsArray.length; x++){
+          phoArray.push(", ");
+          phoArray.push(tagsArray[x]);
+        }
+       // console.log("tags", tagsArray);
+
       }
     }
-          console.log("lonArray", lonArray);
-          console.log("latArray", latArray);
+          console.log("phoArray", phoArray);
+          // console.log("latArray", latArray);
 
     return (
           <div >
@@ -45,20 +38,7 @@ var Feed = React.createClass({
           </div>
     );
 
-
   }
-    // for(var i=0; photos.length; i ++){
-    //   console.log("in for loop");
-    //   singlepic = Array[i.images.low_resolution.url];
-    //   console.log("single data", singlepic);
-    // }
-  
-   //  // });
-   //  return (
-   //    <div> whastsjl </div>
-   //    );
-   
-
 });
 
 

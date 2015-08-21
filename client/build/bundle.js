@@ -1,44 +1,37 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var React = require('react');
 var Feeditem = require('./Feeditem');
-var $ = require('jquery');
+var StyleSheet = require('react-style');
 
 var Feed = React.createClass({displayName: "Feed",
-  getInitialState: function() {
-    return {
-      data: []
-          };
-  },
-
-  componentDidMount: function() {
-    $.getJSON(this.props.source, null, function(obj) {
-      console.log("originl", obj);
-      var photos = obj.data;
-      // console.log(photos);
-      // checks to see if component is still mounted before updating
-      if (this.isMounted()) {
-        this.setState({
-          data: photos
-        });
-      }
-
-    }.bind(this));
-  },
 
   render: function() {
-    console.log("in render");
     var phoArray = [];
+    var nameArray = [];
+    // var tagsArray = [];
     var lonArray = [];
     var latArray = [];
-    for(var i=0; i<this.state.data.length; i++){
-      if(this.state.data[i].location !== null){
-      phoArray.push(React.createElement(Feeditem, {pictures: this.state.data[i].images.low_resolution.url}));
-      lonArray.push(this.state.data[i].location.longitude);
-      latArray.push(this.state.data[i].location.latitude);
+    for(var i=0; i<this.props.data.length; i++){
+      if(this.props.data[i].location !== null){
+        phoArray.push(React.createElement(Feeditem, {pictures: this.props.data[i].images.low_resolution.url}));
+        phoArray.push("USERNAME= ");
+        phoArray.push(this.props.data[i].user.username);
+        phoArray.push(React.createElement("br", null));
+        phoArray.push("TAGS=");
+            lonArray.push(this.props.data[i].location.longitude);
+            latArray.push(this.props.data[i].location.latitude);
+
+        var tagsArray = (this.props.data[i].tags);
+        for(var x =0; x < tagsArray.length; x++){
+          phoArray.push(", ");
+          phoArray.push(tagsArray[x]);
+        }
+       // console.log("tags", tagsArray);
+
       }
     }
-          console.log("lonArray", lonArray);
-          console.log("latArray", latArray);
+          console.log("phoArray", phoArray);
+          // console.log("latArray", latArray);
 
     return (
           React.createElement("div", null, 
@@ -46,26 +39,15 @@ var Feed = React.createClass({displayName: "Feed",
           )
     );
 
-
   }
-    // for(var i=0; photos.length; i ++){
-    //   console.log("in for loop");
-    //   singlepic = Array[i.images.low_resolution.url];
-    //   console.log("single data", singlepic);
-    // }
-  
-   //  // });
-   //  return (
-   //    <div> whastsjl </div>
-   //    );
-   
-
 });
 
 
 module.exports = Feed;
 
-},{"./Feeditem":2,"jquery":55,"react":219}],2:[function(require,module,exports){
+
+
+},{"./Feeditem":2,"react":219,"react-style":61}],2:[function(require,module,exports){
 var React = require('react');
 
 var Feeditem = React.createClass({displayName: "Feeditem", 
@@ -90,12 +72,16 @@ module.exports = Feeditem;
 //   }
 // });
 
+
+
 },{"react":219}],3:[function(require,module,exports){
 var React = require('react');
 var StyleSheet = require('react-style');
 var Feed = require('./Feed');
 var Marker = require('./Marker');
 var GoogleMap = require('google-map-react');
+var $ = require('jquery');
+
 
 var Map = React.createClass({displayName: "Map",
 
@@ -103,7 +89,9 @@ var Map = React.createClass({displayName: "Map",
     return{
       center: [33.979471, -118.422549],
       zoom: 12,
-      value: ''
+      value: '',
+      source: "https://api.instagram.com/v1/media/search?lat=33.979471&lng=-118.422549&client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?",
+      data: []
     };
   },
 
@@ -122,6 +110,21 @@ var Map = React.createClass({displayName: "Map",
     })
   },
 
+  componentDidMount: function() {
+    $.getJSON(this.state.source, null, function(obj) {
+      console.log("originl", obj);
+      var photos = obj.data;
+      // console.log(photos);
+      // checks to see if component is still mounted before updating
+      if (this.isMounted()) {
+        this.setState({
+          data: photos
+        });
+      }
+
+    }.bind(this));
+  },
+
   render: function(){
     var value = this.state.value;
   	return(
@@ -130,16 +133,16 @@ var Map = React.createClass({displayName: "Map",
       	React.createElement(Marker, {lat: this.state.center[0], lng: this.state.center[1], label: "1"}), 
 		React.createElement(Marker, {lat: this.state.center[0]+0.0015, lng: this.state.center[1], label: "2"})
       	), 
+
             React.createElement("form", {onSubmit: this.locatePhotos}, 
               React.createElement("input", {type: "text", value: value, defaultValue: "Enter Location", onChange: this.handleChange}), 
               React.createElement("button", null, " Find Photos ")
             ), 
-      	React.createElement(Feed, {source: "https://api.instagram.com/v1/tags/nofilter/media/recent?client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?"})
+      	React.createElement(Feed, {data: this.state.data})
       	)
   	);
   },
-
-
+     
 
 });
 
@@ -155,7 +158,9 @@ StyleSheet.create({
 
 module.exports = Map;
 
-},{"./Feed":1,"./Marker":4,"google-map-react":11,"react":219,"react-style":61}],4:[function(require,module,exports){
+
+
+},{"./Feed":1,"./Marker":4,"google-map-react":11,"jquery":55,"react":219,"react-style":61}],4:[function(require,module,exports){
 var React = require('react');
 var StyleSheet = require('react-style');
 
@@ -190,12 +195,16 @@ var styles = StyleSheet.create({
 
 module.exports = Marker;
 
+
+
 },{"react":219,"react-style":61}],5:[function(require,module,exports){
 var React = require('react');
 var Map = require('./components/Map');
 
 
 React.render(React.createElement(Map, null), document.getElementById('map'));
+
+
 
 },{"./components/Map":3,"react":219}],6:[function(require,module,exports){
 // shim for using process in browser
