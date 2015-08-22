@@ -35,12 +35,19 @@ var Map = React.createClass({
     console.log('photos of ', this.state.value);
     console.log('test');
 
+    //parse address from our page into url format:
+    // 1600+Amphitheatre+Parkway,+Mountain+View,+CA
+    //Example:
+    //5000 Ellendale Ave, Los Angeles, CA
+    //becomes
+    //5000+Ellendale+Ave,+Los+Angeles,+CA
+    //save this into a variable and put it in gooAddress
+    var gooAddress = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + 'Los+Angeles,+CA' +  '&key=AIzaSyDSSUW3UM8-Q_9rLPKe0cYLliI-sMB42sg';
+
     //use address to obtain latlng through google geocoder
-    $.get(this.state.gooapi, null, function(data){
+    $.getJSON(gooAddress, null, function(data){
       var coordinates = data;
       console.log(data);
-
-
     });
     //assume returned latlng: 34.030371, -118.290308
     var lat = 34.030371;
