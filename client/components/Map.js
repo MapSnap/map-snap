@@ -77,6 +77,7 @@ var Map = React.createClass({
       	<GoogleMap center={this.state.center} zoom={this.state.zoom}>
       		{markerList}
         </GoogleMap>
+
             <form onSubmit = {this.locatePhotos}>
               <input type = "text" value = {this.state.value} defaultValue = "Enter Location" placeholder="Enter location" onChange = {this.handleChange} />
               <button> Find Photos </button>
@@ -86,10 +87,6 @@ var Map = React.createClass({
   	);
   },
      
-  
-
-
-	
 
 });
 
