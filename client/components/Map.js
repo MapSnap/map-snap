@@ -4,8 +4,10 @@ var Feed = require('./Feed');
 var Marker = require('./Marker');
 var GoogleMap = require('google-map-react');
 var $ = require('jquery');
+
 var geocoder;
 var map;
+
 
 var Map = React.createClass({
 
@@ -14,9 +16,11 @@ var Map = React.createClass({
       center: [33.979471, -118.422549],
       zoom: 12,
       value: '',
-      source: 'https://api.instagram.com/v1/tags/nofilter/media/recent?client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?',
+
+      source: "https://api.instagram.com/v1/media/search?lat=33.979471&lng=-118.422549&client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?",
       gooapi:'https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyDSSUW3UM8-Q_9rLPKe0cYLliI-sMB42sg',
       data: [],
+
     };
   },
 
@@ -29,17 +33,57 @@ var Map = React.createClass({
   locatePhotos: function(event) {
     event.preventDefault();
     console.log('photos of ', this.state.value);
+    console.log('test');
 
+    //use address to obtain latlng through google geocoder
+    $.get(this.state.gooapi, null, function(data){
+      var coordinates = data;
+      console.log(data);
+
+
+    });
+    //assume returned latlng: 34.030371, -118.290308
+    var lat = 34.030371;
+    var lng = -118.290308;
+    var newSource = "https://api.instagram.com/v1/media/search?lat=" + lat + "&lng=" + lng + "&client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?";
     this.setState({
-      value: ''
-    })
+      value: '',
+      center: [lat, lng],
+      source: newSource
+    });
+
+    $.getJSON(newSource, null, function(obj) {
+      var photos = obj.data;
+      photos.splice(5);
+      // checks to see if component is still mounted before updating
+      if (this.isMounted()) {
+        this.setState({
+          data: photos
+        });
+      }
+    }.bind(this));
+  },
+
+  componentDidMount: function() {
+    $.getJSON(this.state.source, null, function(obj) {
+      var photos = obj.data;
+      photos.splice(5);
+      // checks to see if component is still mounted before updating
+      if (this.isMounted()) {
+        this.setState({
+          data: photos
+        });
+      }
+
+    }.bind(this));
   },
 
   locateAddress: function(){
     var address = document.getElementById("address").value;
     geocoder.geocode({ 'address': "5300 Beethoven St, Los Angeles, CA 90066"},
-      console.log(geocoder);
+    
      function(results, status) {
+
       if (status == google.maps.GeocoderStatus.OK) {
         map.setCenter(results[0].geometry.location);
         // var marker = new google.maps.Marker({
@@ -69,15 +113,18 @@ var Map = React.createClass({
   },
 
   render: function(){
-    var value = this.state.value;
+  	var markerList = this.state.data.map(function(post,index){
+  		return (<Marker lat={post.location.latitude} lng={post.location.longitude} label={index+1} key={index}></Marker>);
+  	});
+
   	return(
       	<div styles={styles.gmap}>
       	<GoogleMap center={this.state.center} zoom={this.state.zoom}>
-      	<Marker lat={this.state.center[0]} lng={this.state.center[1]} label='1'></Marker>
-        <Marker lat={this.state.center[0]+0.0015} lng={this.state.center[1]} label='2'></Marker>
+      		{markerList}
         </GoogleMap>
+
             <form onSubmit = {this.locatePhotos}>
-              <input type = "text" value = {value} defaultValue = "Enter Location" onChange = {this.handleChange} />
+              <input type = "text" value = {this.state.value} defaultValue = "Enter Location" placeholder="Enter location" onChange = {this.handleChange} />
               <button> Find Photos </button>
             </form>
       	<Feed data = {this.state.data}/>
@@ -85,10 +132,6 @@ var Map = React.createClass({
   	);
   },
      
-  
-
-
-	
 
 });
 

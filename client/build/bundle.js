@@ -3,24 +3,43 @@ var React = require('react');
 var Feeditem = require('./Feeditem');
 
 
-var Feed = React.createClass({displayName: "Feed",
+
+
   
   
 
+var StyleSheet = require('react-style');
+
+var Feed = React.createClass({displayName: "Feed",
+
+
   render: function() {
-    console.log("in render");
     var phoArray = [];
+    var nameArray = [];
+    // var tagsArray = [];
     var lonArray = [];
     var latArray = [];
     for(var i=0; i<this.props.data.length; i++){
       if(this.props.data[i].location !== null){
-      phoArray.push(React.createElement(Feeditem, {pictures: this.props.data[i].images.low_resolution.url}));
-      lonArray.push(this.props.data[i].location.longitude);
-      latArray.push(this.props.data[i].location.latitude);
+
+        phoArray.push(React.createElement(Feeditem, {pictures: this.props.data[i].images.low_resolution.url}));
+        phoArray.push("USERNAME= ");
+        phoArray.push(this.props.data[i].user.username);
+        phoArray.push(React.createElement("br", null));
+        phoArray.push("TAGS=");
+            lonArray.push(this.props.data[i].location.longitude);
+            latArray.push(this.props.data[i].location.latitude);
+
+        var tagsArray = (this.props.data[i].tags);
+        phoArray.push(tagsArray[0]);
+        for(var x =1; x < tagsArray.length; x++){
+          phoArray.push(", ");
+          phoArray.push(tagsArray[x]);
+        }
+
       }
     }
-          console.log("lonArray", lonArray);
-          console.log("latArray", latArray);
+    //console.log("phoArray", phoArray);
 
     return (
           React.createElement("div", null, 
@@ -28,20 +47,7 @@ var Feed = React.createClass({displayName: "Feed",
           )
     );
 
-
   }
-    // for(var i=0; photos.length; i ++){
-    //   console.log("in for loop");
-    //   singlepic = Array[i.images.low_resolution.url];
-    //   console.log("single data", singlepic);
-    // }
-  
-   //  // });
-   //  return (
-   //    <div> whastsjl </div>
-   //    );
-   
-
 });
 
 
@@ -49,10 +55,7 @@ module.exports = Feed;
 
 
 
-
-
-
-},{"./Feeditem":2,"react":219}],2:[function(require,module,exports){
+},{"./Feeditem":2,"react":219,"react-style":61}],2:[function(require,module,exports){
 var React = require('react');
 
 var Feeditem = React.createClass({displayName: "Feeditem", 
@@ -79,9 +82,6 @@ module.exports = Feeditem;
 
 
 
-
-
-
 },{"react":219}],3:[function(require,module,exports){
 var React = require('react');
 var StyleSheet = require('react-style');
@@ -89,8 +89,10 @@ var Feed = require('./Feed');
 var Marker = require('./Marker');
 var GoogleMap = require('google-map-react');
 var $ = require('jquery');
+
 var geocoder;
 var map;
+
 
 var Map = React.createClass({displayName: "Map",
 
@@ -99,8 +101,11 @@ var Map = React.createClass({displayName: "Map",
       center: [33.979471, -118.422549],
       zoom: 12,
       value: '',
-      source: 'https://api.instagram.com/v1/tags/nofilter/media/recent?client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?',
+
+      source: "https://api.instagram.com/v1/media/search?lat=33.979471&lng=-118.422549&client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?",
+      gooapi:'https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyDSSUW3UM8-Q_9rLPKe0cYLliI-sMB42sg',
       data: [],
+
     };
   },
 
@@ -113,15 +118,57 @@ var Map = React.createClass({displayName: "Map",
   locatePhotos: function(event) {
     event.preventDefault();
     console.log('photos of ', this.state.value);
+    console.log('test');
 
+    //use address to obtain latlng through google geocoder
+    $.get(this.state.gooapi, null, function(data){
+      var coordinates = data;
+      console.log(data);
+
+
+    });
+    //assume returned latlng: 34.030371, -118.290308
+    var lat = 34.030371;
+    var lng = -118.290308;
+    var newSource = "https://api.instagram.com/v1/media/search?lat=" + lat + "&lng=" + lng + "&client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?";
     this.setState({
-      value: ''
-    })
+      value: '',
+      center: [lat, lng],
+      source: newSource
+    });
+
+    $.getJSON(newSource, null, function(obj) {
+      var photos = obj.data;
+      photos.splice(5);
+      // checks to see if component is still mounted before updating
+      if (this.isMounted()) {
+        this.setState({
+          data: photos
+        });
+      }
+    }.bind(this));
+  },
+
+  componentDidMount: function() {
+    $.getJSON(this.state.source, null, function(obj) {
+      var photos = obj.data;
+      photos.splice(5);
+      // checks to see if component is still mounted before updating
+      if (this.isMounted()) {
+        this.setState({
+          data: photos
+        });
+      }
+
+    }.bind(this));
   },
 
   locateAddress: function(){
     var address = document.getElementById("address").value;
-    geocoder.geocode({ 'address': "5300 Beethoven St, Los Angeles, CA 90066"}, function(results, status) {
+    geocoder.geocode({ 'address': "5300 Beethoven St, Los Angeles, CA 90066"},
+    
+     function(results, status) {
+
       if (status == google.maps.GeocoderStatus.OK) {
         map.setCenter(results[0].geometry.location);
         // var marker = new google.maps.Marker({
@@ -151,15 +198,18 @@ var Map = React.createClass({displayName: "Map",
   },
 
   render: function(){
-    var value = this.state.value;
+  	var markerList = this.state.data.map(function(post,index){
+  		return (React.createElement(Marker, {lat: post.location.latitude, lng: post.location.longitude, label: index+1, key: index}));
+  	});
+
   	return(
       	React.createElement("div", {styles: styles.gmap}, 
       	React.createElement(GoogleMap, {center: this.state.center, zoom: this.state.zoom}, 
-      	React.createElement(Marker, {lat: this.state.center[0], lng: this.state.center[1], label: "1"}), 
-        React.createElement(Marker, {lat: this.state.center[0]+0.0015, lng: this.state.center[1], label: "2"})
+      		markerList
         ), 
+
             React.createElement("form", {onSubmit: this.locatePhotos}, 
-              React.createElement("input", {type: "text", value: value, defaultValue: "Enter Location", onChange: this.handleChange}), 
+              React.createElement("input", {type: "text", value: this.state.value, defaultValue: "Enter Location", placeholder: "Enter location", onChange: this.handleChange}), 
               React.createElement("button", null, " Find Photos ")
             ), 
       	React.createElement(Feed, {data: this.state.data})
@@ -167,10 +217,6 @@ var Map = React.createClass({displayName: "Map",
   	);
   },
      
-  
-
-
-	
 
 });
 
@@ -185,9 +231,6 @@ StyleSheet.create({
 });
 
 module.exports = Map;
-
-
-
 
 
 
@@ -228,18 +271,12 @@ module.exports = Marker;
 
 
 
-
-
-
 },{"react":219,"react-style":61}],5:[function(require,module,exports){
 var React = require('react');
 var Map = require('./components/Map');
 
 
 React.render(React.createElement(Map, null), document.getElementById('map'));
-
-
-
 
 
 
