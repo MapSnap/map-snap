@@ -35,19 +35,15 @@ var Map = React.createClass({
     var lat = 34.030371;
     var lng = -118.290308;
     var newSource = "https://api.instagram.com/v1/media/search?lat=" + lat + "&lng=" + lng + "&client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?";
-    console.log(newSource);
     this.setState({
       value: '',
       center: [lat, lng],
       source: newSource
     });
-    //trigger new getJSON ?
-    //this.componentDidMount();
-    console.log(this.state.source);
+
     $.getJSON(newSource, null, function(obj) {
-      console.log("photo get request in locate photos", obj);
       var photos = obj.data;
-      // console.log(photos);
+      photos.splice(5);
       // checks to see if component is still mounted before updating
       if (this.isMounted()) {
         this.setState({
@@ -55,14 +51,12 @@ var Map = React.createClass({
         });
       }
     }.bind(this));
-    //console.log("end of setState in locatePhotos");
   },
 
   componentDidMount: function() {
     $.getJSON(this.state.source, null, function(obj) {
-      console.log("originl", obj);
       var photos = obj.data;
-      // console.log(photos);
+      photos.splice(5);
       // checks to see if component is still mounted before updating
       if (this.isMounted()) {
         this.setState({
@@ -74,14 +68,17 @@ var Map = React.createClass({
   },
 
   render: function(){
+  	var markerList = this.state.data.map(function(post,index){
+  		return (<Marker lat={post.location.latitude} lng={post.location.longitude} label={index+1} key={index}></Marker>);
+  	});
+
   	return(
       	<div styles={styles.gmap}>
       	<GoogleMap center={this.state.center} zoom={this.state.zoom}>
-      		<Marker lat={this.state.center[0]} lng={this.state.center[1]} label='1'></Marker>
-        	<Marker lat={this.state.center[0]+0.0015} lng={this.state.center[1]} label='2'></Marker>
+      		{markerList}
         </GoogleMap>
             <form onSubmit = {this.locatePhotos}>
-              <input type = "text" value = {this.state.value} defaultValue = "Enter Location" onChange = {this.handleChange} />
+              <input type = "text" value = {this.state.value} defaultValue = "Enter Location" placeholder="Enter location" onChange = {this.handleChange} />
               <button> Find Photos </button>
             </form>
       	<Feed data = {this.state.data}/>
