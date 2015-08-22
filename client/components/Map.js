@@ -32,83 +32,48 @@ var Map = React.createClass({
 
   locatePhotos: function(event) {
     event.preventDefault();
-    console.log('photos of ', this.state.value);
-    console.log('test');
 
     //parse address from our page into url format:
-    // 1600+Amphitheatre+Parkway,+Mountain+View,+CA
-    //Example:
-    //5000 Ellendale Ave, Los Angeles, CA
-    //becomes
+    //5000 Ellendale Ave, Los Angeles, CA -->
     //5000+Ellendale+Ave,+Los+Angeles,+CA
-    //save this into a variable and put it in gooAddress
-    var gooAddress = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + 'Los+Angeles,+CA' +  '&key=AIzaSyDSSUW3UM8-Q_9rLPKe0cYLliI-sMB42sg';
-
-    //use address to obtain latlng through google geocoder
-    $.getJSON(gooAddress, null, function(data){
-      var coordinates = data;
-      console.log(data);
-    });
-    //assume returned latlng: 34.030371, -118.290308
-    var lat = 34.030371;
-    var lng = -118.290308;
-    var newSource = "https://api.instagram.com/v1/media/search?lat=" + lat + "&lng=" + lng + "&client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?";
-    this.setState({
-      value: '',
-      center: [lat, lng],
-      source: newSource
-    });
-
-    $.getJSON(newSource, null, function(obj) {
-      var photos = obj.data;
-      photos.splice(5);
-      // checks to see if component is still mounted before updating
-      if (this.isMounted()) {
-        this.setState({
-          data: photos
-        });
-      }
-    }.bind(this));
-  },
-
-  componentDidMount: function() {
-    $.getJSON(this.state.source, null, function(obj) {
-      var photos = obj.data;
-      photos.splice(5);
-      // checks to see if component is still mounted before updating
-      if (this.isMounted()) {
-        this.setState({
-          data: photos
-        });
-      }
-
-    }.bind(this));
-  },
-
-  locateAddress: function(){
     var address = document.getElementById("address").value;
-    geocoder.geocode({ 'address': "5300 Beethoven St, Los Angeles, CA 90066"},
-    
-     function(results, status) {
+    var parsedAddress = address.replace(/\s/g,'+');
 
-      if (status == google.maps.GeocoderStatus.OK) {
-        map.setCenter(results[0].geometry.location);
-        // var marker = new google.maps.Marker({
-        //     map: map,
-        //     position: results[0].geometry.location
-        // });
-      } else {
-        alert("Geocode was not successful for the following reason: " + status);
-      }
-    });
+    var gooAddress = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + parsedAddress +  '&key=AIzaSyDSSUW3UM8-Q_9rLPKe0cYLliI-sMB42sg';
+
+    var lat;
+    var lng;
+
+    //use gooAddress to obtain latlng through google geocoder
+    $.getJSON(gooAddress, null, function(data){
+      lat = data.results[0].geometry.location.lat;
+      lng = data.results[0].geometry.location.lng;
+
+
+      var newSource = "https://api.instagram.com/v1/media/search?lat=" + lat + "&lng=" + lng + "&client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?";
+      this.setState({
+        value: '',
+        center: [lat, lng],
+        source: newSource
+      });
+
+      //make api request to Instagram using lat and lng obtained through Geocode
+      $.getJSON(newSource, null, function(obj) {
+        var photos = obj.data;
+        photos.splice(5);
+        if (this.isMounted()) {
+          this.setState({
+            data: photos
+          });
+        }
+      }.bind(this));
+    }.bind(this));
   },
-
 
   componentDidMount: function() {
     $.getJSON(this.state.source, null, function(obj) {
-      console.log("originl", obj);
       var photos = obj.data;
-      // console.log(photos);
+      photos.splice(5);
       // checks to see if component is still mounted before updating
       if (this.isMounted()) {
         this.setState({
@@ -131,7 +96,7 @@ var Map = React.createClass({
         </GoogleMap>
 
             <form onSubmit = {this.locatePhotos}>
-              <input type = "text" value = {this.state.value} defaultValue = "Enter Location" placeholder="Enter location" onChange = {this.handleChange} />
+              <input type = "text" id="address" value = {this.state.value} defaultValue = "Enter Location" placeholder="Enter location" onChange = {this.handleChange} />
               <button> Find Photos </button>
             </form>
       	<Feed data = {this.state.data}/>
