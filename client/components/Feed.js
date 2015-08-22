@@ -21,16 +21,14 @@ var Feed = React.createClass({
             latArray.push(this.props.data[i].location.latitude);
 
         var tagsArray = (this.props.data[i].tags);
-        for(var x =0; x < tagsArray.length; x++){
+        phoArray.push(tagsArray[0]);
+        for(var x =1; x < tagsArray.length; x++){
           phoArray.push(", ");
           phoArray.push(tagsArray[x]);
         }
-       // console.log("tags", tagsArray);
-
       }
     }
-          console.log("phoArray", phoArray);
-          // console.log("latArray", latArray);
+    //console.log("phoArray", phoArray);
 
     return (
           <div >
