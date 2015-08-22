@@ -1,40 +1,22 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var React = require('react');
 var Feeditem = require('./Feeditem');
-var $ = require('jquery');
+
 
 var Feed = React.createClass({displayName: "Feed",
-  getInitialState: function() {
-    return {
-      data: []
-          };
-  },
-
-  componentDidMount: function() {
-    $.getJSON(this.props.source, null, function(obj) {
-      console.log("originl", obj);
-      var photos = obj.data;
-      // console.log(photos);
-      // checks to see if component is still mounted before updating
-      if (this.isMounted()) {
-        this.setState({
-          data: photos
-        });
-      }
-
-    }.bind(this));
-  },
+  
+  
 
   render: function() {
     console.log("in render");
     var phoArray = [];
     var lonArray = [];
     var latArray = [];
-    for(var i=0; i<this.state.data.length; i++){
-      if(this.state.data[i].location !== null){
-      phoArray.push(React.createElement(Feeditem, {pictures: this.state.data[i].images.low_resolution.url}));
-      lonArray.push(this.state.data[i].location.longitude);
-      latArray.push(this.state.data[i].location.latitude);
+    for(var i=0; i<this.props.data.length; i++){
+      if(this.props.data[i].location !== null){
+      phoArray.push(React.createElement(Feeditem, {pictures: this.props.data[i].images.low_resolution.url}));
+      lonArray.push(this.props.data[i].location.longitude);
+      latArray.push(this.props.data[i].location.latitude);
       }
     }
           console.log("lonArray", lonArray);
@@ -70,7 +52,7 @@ module.exports = Feed;
 
 
 
-},{"./Feeditem":2,"jquery":55,"react":219}],2:[function(require,module,exports){
+},{"./Feeditem":2,"react":219}],2:[function(require,module,exports){
 var React = require('react');
 
 var Feeditem = React.createClass({displayName: "Feeditem", 
@@ -106,6 +88,9 @@ var StyleSheet = require('react-style');
 var Feed = require('./Feed');
 var Marker = require('./Marker');
 var GoogleMap = require('google-map-react');
+var $ = require('jquery');
+var geocoder;
+var map;
 
 var Map = React.createClass({displayName: "Map",
 
@@ -113,7 +98,9 @@ var Map = React.createClass({displayName: "Map",
     return{
       center: [33.979471, -118.422549],
       zoom: 12,
-      value: ''
+      value: '',
+      source: 'https://api.instagram.com/v1/tags/nofilter/media/recent?client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?',
+      data: [],
     };
   },
 
@@ -132,6 +119,37 @@ var Map = React.createClass({displayName: "Map",
     })
   },
 
+  locateAddress: function(){
+    var address = document.getElementById("address").value;
+    geocoder.geocode({ 'address': "5300 Beethoven St, Los Angeles, CA 90066"}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        map.setCenter(results[0].geometry.location);
+        // var marker = new google.maps.Marker({
+        //     map: map,
+        //     position: results[0].geometry.location
+        // });
+      } else {
+        alert("Geocode was not successful for the following reason: " + status);
+      }
+    });
+  },
+
+
+  componentDidMount: function() {
+    $.getJSON(this.state.source, null, function(obj) {
+      console.log("originl", obj);
+      var photos = obj.data;
+      // console.log(photos);
+      // checks to see if component is still mounted before updating
+      if (this.isMounted()) {
+        this.setState({
+          data: photos
+        });
+      }
+
+    }.bind(this));
+  },
+
   render: function(){
     var value = this.state.value;
   	return(
@@ -144,7 +162,7 @@ var Map = React.createClass({displayName: "Map",
               React.createElement("input", {type: "text", value: value, defaultValue: "Enter Location", onChange: this.handleChange}), 
               React.createElement("button", null, " Find Photos ")
             ), 
-      	React.createElement(Feed, {source: "https://api.instagram.com/v1/tags/nofilter/media/recent?client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?"})
+      	React.createElement(Feed, {data: this.state.data})
       	)
   	);
   },
@@ -173,7 +191,7 @@ module.exports = Map;
 
 
 
-},{"./Feed":1,"./Marker":4,"google-map-react":11,"react":219,"react-style":61}],4:[function(require,module,exports){
+},{"./Feed":1,"./Marker":4,"google-map-react":11,"jquery":55,"react":219,"react-style":61}],4:[function(require,module,exports){
 var React = require('react');
 var StyleSheet = require('react-style');
 

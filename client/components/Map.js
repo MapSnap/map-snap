@@ -3,6 +3,9 @@ var StyleSheet = require('react-style');
 var Feed = require('./Feed');
 var Marker = require('./Marker');
 var GoogleMap = require('google-map-react');
+var $ = require('jquery');
+var geocoder;
+var map;
 
 var Map = React.createClass({
 
@@ -10,7 +13,10 @@ var Map = React.createClass({
     return{
       center: [33.979471, -118.422549],
       zoom: 12,
-      value: ''
+      value: '',
+      source: 'https://api.instagram.com/v1/tags/nofilter/media/recent?client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?',
+      gooapi:'https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyDSSUW3UM8-Q_9rLPKe0cYLliI-sMB42sg',
+      data: [],
     };
   },
 
@@ -29,6 +35,39 @@ var Map = React.createClass({
     })
   },
 
+  locateAddress: function(){
+    var address = document.getElementById("address").value;
+    geocoder.geocode({ 'address': "5300 Beethoven St, Los Angeles, CA 90066"},
+      console.log(geocoder);
+     function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        map.setCenter(results[0].geometry.location);
+        // var marker = new google.maps.Marker({
+        //     map: map,
+        //     position: results[0].geometry.location
+        // });
+      } else {
+        alert("Geocode was not successful for the following reason: " + status);
+      }
+    });
+  },
+
+
+  componentDidMount: function() {
+    $.getJSON(this.state.source, null, function(obj) {
+      console.log("originl", obj);
+      var photos = obj.data;
+      // console.log(photos);
+      // checks to see if component is still mounted before updating
+      if (this.isMounted()) {
+        this.setState({
+          data: photos
+        });
+      }
+
+    }.bind(this));
+  },
+
   render: function(){
     var value = this.state.value;
   	return(
@@ -41,7 +80,7 @@ var Map = React.createClass({
               <input type = "text" value = {value} defaultValue = "Enter Location" onChange = {this.handleChange} />
               <button> Find Photos </button>
             </form>
-      	<Feed source = "https://api.instagram.com/v1/tags/nofilter/media/recent?client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?"/>
+      	<Feed data = {this.state.data}/>
       	</div>
   	);
   },
