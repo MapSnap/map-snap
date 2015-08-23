@@ -24,7 +24,7 @@ var styles = StyleSheet.create({
 		backgroundColor: 'white',
 		textAlign: 'center',
 		color: '#3f51b5',
-		fontSize: 16,
+		fontSize: 12,
 		fontWeight: 'bold',
 		padding: 4
 	}

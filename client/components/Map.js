@@ -4,7 +4,6 @@ var Feed = require('./Feed');
 var Marker = require('./Marker');
 var GoogleMap = require('google-map-react');
 var $ = require('jquery');
-
 var geocoder;
 var map;
 
@@ -90,17 +89,34 @@ var Map = React.createClass({
   	});
 
   	return(
-      	<div styles={styles.gmap}>
-      	<GoogleMap center={this.state.center} zoom={this.state.zoom}>
-      		{markerList}
-        </GoogleMap>
+            <div className="container-fluid">
+                    <div className="row">
+                  	<div className="col-xs-12 col-sm-6 col-sm-offset-3" >
+                          <GoogleMap center={this.state.center} zoom={this.state.zoom}>
+                        		{markerList}
+                          </GoogleMap>
+                        </div>
+                  </div>
 
-            <form onSubmit = {this.locatePhotos}>
-              <input type = "text" id="address" value = {this.state.value} defaultValue = "Enter Location" placeholder="Enter location" onChange = {this.handleChange} />
-              <button> Find Photos </button>
-            </form>
-      	<Feed data = {this.state.data}/>
+                  <div className = "row text-center"> 
+                    <div className = "col-xs-12"> 
+                      <form className="form-inline" onSubmit = {this.locatePhotos}>
+                      <div className = "form-group"> 
+                        <input type = "text" id="address" className="text-center center-block" value = {this.state.value} placeholder="Enter location" onChange = {this.handleChange} />
+                        <button className="btn btn-success center-block"> Find Photos </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                                        
+
+                    <div className="row">
+                      <div className="text-center">
+              	     <Feed data = {this.state.data}/>
+                      </div>
+                    </div>
       	</div>
+
   	);
   },
      
@@ -111,9 +127,9 @@ var Map = React.createClass({
 var styles =
 StyleSheet.create({
 	gmap:{
-		height: '50%',
-		width: '50%',
-		margin: '0 auto'
+		height: '100px',
+		// width: '50%',
+            // margin: '0 auto'
 	}
 });
 
