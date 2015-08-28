@@ -4,33 +4,16 @@ var Feed = require('./Feed');
 var Marker = require('./Marker');
 var GoogleMap = require('google-map-react');
 var $ = require('jquery');
-var geocoder;
-var map;
-
 
 var Map = React.createClass({
-
-  getInitialState: function(){
-    return{
-      center: [33.979471, -118.422549],
-      zoom: 12,
-      value: '',
-
-      source: "https://api.instagram.com/v1/media/search?lat=33.979471&lng=-118.422549&client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?",
-      gooapi:'https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyDSSUW3UM8-Q_9rLPKe0cYLliI-sMB42sg',
-      data: [],
-
-    };
-  },
 
   handleChange: function(event) {
     this.setState({
       value: event.target.value
-    })
+    });
   },
 
   locatePhotos: function(event) {
-    event.preventDefault();
 
     //parse address from our page into url format:
     //5000 Ellendale Ave, Los Angeles, CA -->
@@ -59,7 +42,7 @@ var Map = React.createClass({
       //make api request to Instagram using lat and lng obtained through Geocode
       $.getJSON(newSource, null, function(obj) {
         var photos = obj.data;
-        photos.splice(5);
+        photos.splice(10);
         if (this.isMounted()) {
           this.setState({
             data: photos
@@ -69,10 +52,28 @@ var Map = React.createClass({
     }.bind(this));
   },
 
+  getInitialState: function(){
+    // Get the initial geolocation
+    
+    return{
+      center: [33.979471, -118.422549],
+      zoom: 12,
+      value: '',
+
+      source: 'https://api.instagram.com/v1/media/search?lat=33.979471&lng=-118.422549&client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?',
+      lat: '33.979471',
+      lng: '-118.422549',
+      client_id: '46141b7b17fa4f29911b66e830bafcf1',
+      gooapi:'',
+      data: [],
+
+    };
+  },
+
   componentDidMount: function() {
     $.getJSON(this.state.source, null, function(obj) {
       var photos = obj.data;
-      photos.splice(5);
+      photos.splice(10);
       // checks to see if component is still mounted before updating
       if (this.isMounted()) {
         this.setState({
@@ -89,37 +90,34 @@ var Map = React.createClass({
   	});
 
   	return(
-            <div className="container-fluid">
-                    <div className="row">
-                  	<div className="col-xs-12 col-sm-6 col-sm-offset-3" >
-                          <GoogleMap center={this.state.center} zoom={this.state.zoom}>
-                        		{markerList}
-                          </GoogleMap>
-                        </div>
-                  </div>
+      <div className="container-fluid">
+        <div className="row">
+        	<div className="col-xs-12 col-sm-6 col-sm-offset-3" >
+            <GoogleMap center={this.state.center} zoom={this.state.zoom}>
+          		{markerList}
+            </GoogleMap>
+          </div>
+        </div>
 
-                  <div className = "row text-center"> 
-                    <div className = "col-xs-12"> 
-                      <form className="form-inline" onSubmit = {this.locatePhotos}>
-                      <div className = "form-group"> 
-                        <input type = "text" id="address" className="text-center center-block" value = {this.state.value} placeholder="Enter location" onChange = {this.handleChange} />
-                        <button className="btn btn-success center-block"> Find Photos </button>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                                        
-
-                    <div className="row">
-                      <div className="text-center">
-              	     <Feed data = {this.state.data}/>
-                      </div>
-                    </div>
-      	</div>
-
+        <div className = "row text-center"> 
+          <div className = "col-xs-12"> 
+            <form className="form-inline" onSubmit={this.locatePhotos}>
+              <div className = "form-group"> 
+                <input type = "text" id="address" className="text-center center-block" value = {this.state.value} placeholder="Enter location" onChange = {this.handleChange} required/>
+                <button className="btn btn-success center-block"> Find Photos </button>
+              </div>
+            </form>
+          </div>
+        </div>
+                                    
+        <div className="row">
+          <div className="text-center">
+  	        <Feed data={this.state.data}/>
+          </div>
+        </div>
+    	</div>
   	);
-  },
-     
+  }
 
 });
 

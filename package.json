@@ -19,16 +19,21 @@
   "homepage": "https://github.com/Pllx/map-snap#readme",
   "dependencies": {
     "browserify": "^11.0.1",
+    "config": "^1.15.0",
     "express": "^4.13.3",
     "google-map-react": "^0.4.1",
     "gulp": "^3.9.0",
     "gulp-nodemon": "^2.0.3",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-uglify": "^1.4.0",
     "jquery": "^2.1.4",
     "nodemon": "^1.4.1",
     "react": "^0.13.3",
     "react-bootstrap": "^0.24.5",
     "react-style": "^0.5.5",
     "reactify": "^1.1.1",
+    "request": "^2.61.0",
+    "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.3.1"
   }

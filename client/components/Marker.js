@@ -5,14 +5,14 @@ var Marker = React.createClass({
 	render: function(){
 		return (
 			<div styles = {styles.marker}>
-			{this.props.label}
+				{this.props.label}
 			</div>
 		);
 	}
 });
 
 var styles = StyleSheet.create({
-	marker:{
+	marker: {
 		position: 'absolute',
 		width: 20, 
 		height: 20,
