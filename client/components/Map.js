@@ -6,6 +6,18 @@ var GoogleMap = require('google-map-react');
 var $ = require('jquery');
 
 var Map = React.createClass({
+  
+  getPhotos: function(source) {
+    $.getJSON(source, null, function(obj) {
+      var photos = obj.data;
+      photos.splice(10);
+      if (this.isMounted()) {
+        this.setState({
+          data: photos
+        });
+      }
+    }.bind(this));
+  },
 
   handleChange: function(event) {
     this.setState({
@@ -14,7 +26,8 @@ var Map = React.createClass({
   },
 
   locatePhotos: function(event) {
-
+    event.preventDefault();
+    
     //parse address from our page into url format:
     //5000 Ellendale Ave, Los Angeles, CA -->
     //5000+Ellendale+Ave,+Los+Angeles,+CA
@@ -40,15 +53,7 @@ var Map = React.createClass({
       });
 
       //make api request to Instagram using lat and lng obtained through Geocode
-      $.getJSON(newSource, null, function(obj) {
-        var photos = obj.data;
-        photos.splice(10);
-        if (this.isMounted()) {
-          this.setState({
-            data: photos
-          });
-        }
-      }.bind(this));
+      this.getPhotos(newSource);
     }.bind(this));
   },
 
@@ -71,17 +76,7 @@ var Map = React.createClass({
   },
 
   componentDidMount: function() {
-    $.getJSON(this.state.source, null, function(obj) {
-      var photos = obj.data;
-      photos.splice(10);
-      // checks to see if component is still mounted before updating
-      if (this.isMounted()) {
-        this.setState({
-          data: photos
-        });
-      }
-
-    }.bind(this));
+    this.getPhotos(this.state.source);
   },
 
   render: function(){
