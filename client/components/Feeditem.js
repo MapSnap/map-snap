@@ -4,12 +4,11 @@ var Feeditem = React.createClass({
   
   handleclick: function (index) {
     for ( var i = 0; i < this.props.url.length; i+=1) {
-      
+
     }
   },
 
   render: function() {
-    console.log(this.props.url);
     var tagsArray = [];
       for (var i = 0; i < this.props.tags.length; i+=1) {
         if (this.props.tags[i+1] !== ' ') {
