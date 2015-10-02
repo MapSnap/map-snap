@@ -3,9 +3,11 @@ var StyleSheet = require('react-style');
 
 var Marker = React.createClass({
 	render: function(){
+		
 		return (
 			<div styles = {styles.marker}>
-			{this.props.label}
+				<img src={this.props.photos}/>
+			
 			</div>
 		);
 	}

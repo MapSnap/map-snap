@@ -13,7 +13,7 @@ var Map = React.createClass({
   getInitialState: function(){
     return{
       center: [33.979471, -118.422549],
-      zoom: 12,
+      zoom: 15,
       value: '',
 
       source: "https://api.instagram.com/v1/media/search?lat=33.979471&lng=-118.422549&client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?",
@@ -26,7 +26,7 @@ var Map = React.createClass({
   handleChange: function(event) {
     this.setState({
       value: event.target.value
-    })
+    });
   },
 
   locatePhotos: function(event) {
@@ -84,8 +84,8 @@ var Map = React.createClass({
   },
 
   render: function(){
-  	var markerList = this.state.data.map(function(post,index){
-  		return (<Marker lat={post.location.latitude} lng={post.location.longitude} label={index+1} key={index}></Marker>);
+  	var markerList = this.state.data.map(function(post, index) {
+      return (<Marker lat={post.location.latitude} photos={post.images.thumbnail.url} lng={post.location.longitude} label={index+1} key={index}></Marker>);
   	});
 
   	return(

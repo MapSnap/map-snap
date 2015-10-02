@@ -1,13 +1,31 @@
 var React = require('react');
 
 var Feeditem = React.createClass({ 
-render: function() {
-	return (
-	      <div>
-	      <img src = {this.props.pictures}/>
-	      </div>
-	    )
-  }
+  
+  handleclick: function (index) {
+    for ( var i = 0; i < this.props.url.length; i+=1) {
+      
+    }
+  },
+
+  render: function() {
+    console.log(this.props.url);
+    var tagsArray = [];
+      for (var i = 0; i < this.props.tags.length; i+=1) {
+        if (this.props.tags[i+1] !== ' ') {
+         tagsArray.unshift(this.props.tags[i] + ' #');  
+        }
+      }
+  	return (
+  	      <div>
+           
+            {this.props.username} <br/>
+            #{tagsArray} <br/>
+           
+  	       <img src = {this.props.pictures}/>
+  	      </div>
+  	    )
+    }
 });
 
 module.exports = Feeditem;
