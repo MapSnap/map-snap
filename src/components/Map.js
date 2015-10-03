@@ -1,5 +1,9 @@
 var React = require('react');
 var GoogleMap = require('google-map-react');
+var Feed = require('./Feed');
+var Marker = require('./Marker');
+var $ = require('jquery');
+
 var Map = React.createClass({
   getInitialState: function(){
     return{
@@ -105,7 +109,7 @@ var Map = React.createClass({
               	     <Feed data = {this.state.data}/>
                       </div>
                     </div>
-      	</div>
+      	     </div>
 
   	);
   },
@@ -113,26 +117,12 @@ var Map = React.createClass({
 
 });
 
-
-var styles =
-StyleSheet.create({
-	gmap:{
-		height: '100px',
-		// width: '50%',
-            // margin: '0 auto'
-	}
-      zoom: 12
-    };
-  },
-  render: function(){
-    return(
-      <div>
-        <GoogleMap 
-          center={this.state.center} 
-          zoom={this.state.zoom} >
-        </GoogleMap>
-      </div>
-      );
-  }
-});
+// var styles =
+// StyleSheet.create({
+// 	gmap:{
+// 		height: '100px',
+// 		// width: '50%',
+//     // margin: '0 auto'
+// 	  }
+// });
 module.exports = Map;
