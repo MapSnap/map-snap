@@ -1,21 +1,11 @@
 var React = require('react');
-var StyleSheet = require('react-style');
-var Feed = require('./Feed');
-var Marker = require('./Marker');
 var GoogleMap = require('google-map-react');
-var $ = require('jquery');
-var geocoder;
-var map;
-
-
 var Map = React.createClass({
-
   getInitialState: function(){
     return{
       center: [33.979471, -118.422549],
       zoom: 15,
       value: '',
-
       source: "https://api.instagram.com/v1/media/search?lat=33.979471&lng=-118.422549&client_id=46141b7b17fa4f29911b66e830bafcf1&callback=?",
       gooapi:'https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyDSSUW3UM8-Q_9rLPKe0cYLliI-sMB42sg',
       data: [],
@@ -131,6 +121,18 @@ StyleSheet.create({
 		// width: '50%',
             // margin: '0 auto'
 	}
+      zoom: 12
+    };
+  },
+  render: function(){
+    return(
+      <div>
+        <GoogleMap 
+          center={this.state.center} 
+          zoom={this.state.zoom} >
+        </GoogleMap>
+      </div>
+      );
+  }
 });
-
 module.exports = Map;
