@@ -90,7 +90,9 @@ gulp.task('server', function(){
 		ignore: ['client']
 	})
 });
-gulp.tasks('heroku:production', [default]);
+gulp.tasks('heroku:production', function () {
+	
+	});
 // Default Task
 gulp.task('default', 
 	['server', 'sync', 'build', 'watch']);
