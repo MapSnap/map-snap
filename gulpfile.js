@@ -73,15 +73,15 @@ gulp.task('build', function() {
 //			gulp.watch('./build/bundle.js');
 //});
 
-gulp.task('sync', ['watch'], function() {
-  browsersync.init({
+//gulp.task('sync', ['watch'], function() {
+//  browsersync.init({
  
-	 	files: ['**/*.*'],
- 		files: ['**/**'],
-  	proxy: 'http://localhost:3000',
-  	port: 4000
- 	});
- });
+//	 	files: ['**/*.*'],
+// 		files: ['**/**'],
+//  	proxy: 'http://localhost:3000',
+//  	port: 4000
+// 	});
+// });
 
 gulp.task('server', function(){
 	nodemon({
@@ -95,6 +95,6 @@ gulp.task('heroku:production', function () {
 	});
 // Default Task
 gulp.task('default', 
-	['server', 'sync', 'build', 'watch']);
+	['server', 'build', 'watch']);
 
 
